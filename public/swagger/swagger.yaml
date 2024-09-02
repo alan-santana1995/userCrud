@@ -1,0 +1,163 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: "User Manager"
+  description: |-
+    Api de gestão de usuários
+  license:
+    name: MIT
+  contact:
+    name: Alan Santana
+    email: alansantana1995@hotmail.com
+servers:
+  - url: "http://localhost:8000/api"
+    description: "Api"
+tags:
+  - name: User
+    description: "Rotas relacionadas aos usuários"
+paths:
+  /api/users:
+      get:
+        tags:
+          - User
+        summary: Obtém uma página de usuários
+        description: 'Obtém uma página de N usuários, sendo N o número de itens que a pessoa deseja receber na resposta.'
+        requestBody:
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserPage'
+        responses:
+          '200':
+            description: 'Página de usuários obtida com sucesso'
+            content:
+              'application/json':
+                schema:
+                  type: object
+                  properties:
+                    user:
+                      type: object
+                      $ref: '#/components/schemas/UserResponse'
+                    token:
+                      type: string
+
+          '422':
+            description: 'Requisição inválida'
+            content:
+              'application/json':
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: 'Mensagem de erro'
+                    errors:
+                      type: array
+                      items:
+                        type: string
+                        description: 'Explicação do erro'
+definitions:
+  UserModel:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Nome do usuário.
+      email:
+        type: string
+        description: E-mail do usuário.
+        format: email
+      document:
+        type: string
+        description: CPF do usuário.
+      birth_date:
+        type: string
+        description: Data de nascimento
+        format: date
+      phone_number:
+        type: string
+        description: Telefone do usuário
+      zip_code:
+        type: string
+        description: CEP de um usuário
+        pattern: '\^\d{5}\d{3}$\'
+      uf:
+        type: string
+        description: Unidade Federativa atual do usuário.
+        format: uf
+        pattern: '\^[A-Z]{2}$\'
+      city:
+        type: string
+        description: Cidade atual do usuário
+      neighborhood:
+        type: string
+        description: Bairro atual do usuário
+      address:
+        type: string
+        description: Endereço atual do usuário
+      status:
+        type: boolean
+        description: Status da conta do usuário
+components:
+  schemas:
+    UsersPage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/definitions/UserModel"
+        links:
+          type: object
+          description: Links da paginação
+          properties:
+            first:
+              type: string
+              format: url
+              example: "http://example.com/users?page=1"
+            last:
+              type: string
+              format: url
+              example: "http://example.com/users?page=1"
+            prev:
+              type: string
+              format: url
+              nullable: true
+              example: null
+            next:
+              type: string
+              format: url
+              nullable: true
+              example: null
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+              description: Número da página atual
+              example: 1
+            from:
+              type: integer
+              description: Número global do primeiro item da página
+              example: 1
+            last_page:
+              type: integer
+              description: Número da última página
+              example: 1
+            path:
+              type: string
+              description: Caminho de onde foram obtidos os dados da paginação
+              example: "http://example.com/users"
+              format: uri
+            per_page:
+              type: integer
+              description: Número de itens por página
+              example: 15
+            to:
+              type: integer
+              description: Número global do último número da página
+              example: 10
+            total:
+              type: integer
+              description: Total global de itens
+              example: 10
