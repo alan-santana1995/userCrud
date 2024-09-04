@@ -38,7 +38,7 @@ class GetUsersRequest extends FormRequest
     public function messages()
     {
         return Lang::get(
-            'user.get.validation_errors'
+            'user.get.messages'
         );
     }
 

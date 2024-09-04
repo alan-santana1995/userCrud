@@ -2,12 +2,29 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $last_name
+ * @property string $email
+ * @property string $document
+ * @property string $birth_date
+ * @property string $phone_number
+ * @property string $zip_code
+ * @property string $uf
+ * @property string $city
+ * @property string $neighborhood
+ * @property string $address
+ * @property boolean $status
+ *
+ * @method Builder filterInactive()
+ */
+class User extends Model
 {
     use HasFactory, Notifiable;
 
@@ -18,30 +35,39 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
         'email',
-        'password',
+        'document',
+        'birth_date',
+        'phone_number',
+        'zip_code',
+        'uf',
+        'city',
+        'neighborhood',
+        'address',
+        'status',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected static function booted(): void
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        static::addGlobalScope(
+            'filter-inactive',
+            fn (Builder $q) => $q->filterInactive()
+        );
+    }
+
+    public function getStatusAttribute(): bool
+    {
+        return filter_var($this->attributes['status'], FILTER_VALIDATE_BOOL);
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->attributes['name'] . ' ' . $this->attributes['last_name'];
+    }
+
+    public function scopeFilterInactive(Builder $q): Builder
+    {
+        return $q->whereStatus(true);
     }
 }

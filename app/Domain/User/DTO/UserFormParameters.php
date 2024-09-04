@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Domain\User\DTO;
+namespace App\Domain\User\DTO;
 
 use App\Http\Requests\UserFormRequest;
 
@@ -7,6 +7,7 @@ abstract class UserFormParameters
 {
     public function __construct(
         private string $name,
+        private string $lastName,
         private string $email,
         private string $document,
         private string $birthDate,
@@ -29,6 +30,11 @@ abstract class UserFormParameters
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getLastName(): string
+    {
+        return $this->lastName;
     }
 
     public function getEmail(): string

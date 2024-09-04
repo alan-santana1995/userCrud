@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Domain\User\DTO\UserFormParameters;
+namespace App\Domain\User\DTO;
+
+use App\Domain\User\DTO\UserFormParameters;
 use App\Http\Requests\UserFormRequest;
 
 class CreateNewUserParameters extends UserFormParameters
@@ -11,6 +13,7 @@ class CreateNewUserParameters extends UserFormParameters
 
         return new self(
             name: $data['name'],
+            lastName: $data['last_name'],
             email: $data['email'],
             document: $data['document'],
             birthDate: $data['birthDate'],

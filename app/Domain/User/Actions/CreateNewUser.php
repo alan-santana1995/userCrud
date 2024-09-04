@@ -1,5 +1,8 @@
 <?php
 
+namespace App\Domain\User\Actions;
+
+use App\Domain\User\DTO\CreateNewUserParameters;
 use App\Models\User;
 
 class CreateNewUser

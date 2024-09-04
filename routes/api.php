@@ -5,4 +5,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/doc', fn () => view('documentation'));
 
-Route::resource('/user', UserController::class)->except(['destroy', 'create', 'update']);
+Route::resource('users', UserController::class)->only(['index', 'show', 'store', 'update']);

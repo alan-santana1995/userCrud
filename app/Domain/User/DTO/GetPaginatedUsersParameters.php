@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Domain\User\DTO;
+namespace App\Domain\User\DTO;
 
 use App\Http\Requests\GetUsersRequest;
 

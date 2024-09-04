@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Domain\User\DTO;
+namespace App\Domain\User\DTO;
 
-use App\Http\Domain\User\DTO\UserFormParameters;
+use App\Domain\User\DTO\UserFormParameters;
 use App\Http\Requests\UserFormRequest;
 
 class UpdateUserParameters extends UserFormParameters
@@ -12,7 +12,9 @@ class UpdateUserParameters extends UserFormParameters
         $data = $request->validated();
 
         return new self(
+            id: $data['id'],
             name: $data['name'],
+            lastName: $data['last_name'],
             email: $data['email'],
             document: $data['document'],
             birthDate: $data['birthDate'],
@@ -22,7 +24,6 @@ class UpdateUserParameters extends UserFormParameters
             city: $data['city'],
             neighborhood: $data['neighborhood'],
             address: $data['address'],
-            id: $data['id']
         );
     }
 }

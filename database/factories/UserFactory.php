@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Domain\User\Enum\UfEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -24,21 +25,25 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'name' => fake()->firstName(),
+            'last_name' => fake()->firstName(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'document' => fake()->regexify('\d{11}'),
+            'birth_date' => fake()->date(),
+            'phone_number' => fake()->regexify('\d{11}'),
+            'zip_code' => fake()->regexify('\d{7}'),
+            'uf' => fake()->randomElement(UfEnum::valuesToArray()),
+            'city' => fake()->name(),
+            'neighborhood' => fake()->name(),
+            'address' => fake()->name(),
+            'status' => true,
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
+    public function inactive(): static
     {
         return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+            'status' => false,
         ]);
     }
 }

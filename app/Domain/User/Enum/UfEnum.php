@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Domain\User\Enum;
+namespace App\Domain\User\Enum;
 
 enum UfEnum: string
 {
@@ -31,4 +31,14 @@ enum UfEnum: string
     case SP = 'sp';
     case SE = 'se';
     case TO = 'to';
+
+    public static function valuesToArray()
+    {
+        $result = [];
+        foreach (self::cases() as $case) {
+            $result[] = $case->value;
+        }
+
+        return $result;
+    }
 }

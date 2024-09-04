@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Domain\User\Enum\UfEnum;
+use App\Domain\User\Enum\UfEnum;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -28,54 +28,69 @@ class UserFormRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                'min:10',
-                'max:255'
+                'max:100',
+            ],
+            'last_name' => [
+                'required',
+                'string',
+                'max:255',
             ],
             'email' => [
                 'required',
                 'email',
-                Rule::unique(User::class, 'email')
+                Rule::unique(User::class, 'email'),
             ],
             'document' => [
                 'required',
-                'email',
-                Rule::unique(User::class, 'document')
+                'string',
+                'max:11',
+                Rule::unique(User::class, 'document'),
             ],
             'birth_date' => [
                 'required',
-                'string',
-                'date'
+                'date_format:Y-m-d',
             ],
             'phone_number' => [
                 'required',
                 'string',
-                'max: 15'
+                'max:11',
             ],
             'zip_code' => [
                 'required',
                 'string',
-                'max:10'
+                'max:7',
             ],
             'uf' => [
                 'required',
                 'string',
-                Rule::enum(UfEnum::class)
+                Rule::enum(UfEnum::class),
             ],
             'city' => [
                 'required',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'neighborhood' => [
                 'required',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'address' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ]
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge(
+            [
+                'zip_code' => preg_replace('/\D+/', '', $this->get('zip_code', '')),
+                'phone_number' => preg_replace('/\D+/', '', $this->get('zip_code', '')),
+                'uf' => strtolower($this->get('uf', '')),
+            ]
+        );
     }
 }

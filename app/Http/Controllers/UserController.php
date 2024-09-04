@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Domain\User\Actions\GetPaginatedUsers;
-use App\Http\Domain\User\Actions\GetUserFromId;
-use App\Http\Domain\User\Actions\UpdateUser;
-use App\Http\Domain\User\DTO\GetPaginatedUsersParameters;
-use App\Http\Domain\User\DTO\UpdateUserParameters;
+use App\Domain\User\Actions\CreateNewUser;
+use App\Domain\User\Actions\GetPaginatedUsers;
+use App\Domain\User\Actions\GetUserFromId;
+use App\Domain\User\Actions\UpdateUser;
+use App\Domain\User\DTO\CreateNewUserParameters;
+use App\Domain\User\DTO\GetPaginatedUsersParameters;
+use App\Domain\User\DTO\UpdateUserParameters;
 use App\Http\Requests\CreateNewUserRequest;
 use App\Http\Requests\GetUsersRequest;
 use App\Http\Requests\UniqueDocumentRequest;
 use App\Http\Requests\UniqueEmailRequest;
 use App\Http\Requests\UpdateUserRequest;
-use CreateNewUser;
-use CreateNewUserParameters;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
@@ -29,7 +29,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(GetUsersRequest $request)
+    public function index(GetUsersRequest $request): JsonResponse
     {
         $parameters = GetPaginatedUsersParameters::fromGetUsersRequest($request);
 
@@ -65,30 +65,6 @@ class UserController extends Controller
     public function show(string $id)
     {
         $user = $this->getUserFromId->execute($id);
-
-        return response()->json($user);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $user = $this->getUserFromId->execute(
-            $id,
-            [
-                'name',
-                'email',
-                'document',
-                'birth_date',
-                'phone_number',
-                'zip_code',
-                'uf',
-                'city',
-                'neighborhood',
-                'address',
-            ]
-        );
 
         return response()->json($user);
     }
