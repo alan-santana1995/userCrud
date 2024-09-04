@@ -173,8 +173,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'cpf' => [
+            'invalid' => 'The provided CPF number is invalid.',
         ],
     ],
 

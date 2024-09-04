@@ -26,7 +26,6 @@ return [
             'document.string' => 'O CPF informado deve ser um texto.',
             'document.max' => 'O CPF informado deve ter 11 caracteres (sem contar pontos e o traço).',
             'document.unique' => 'O CPF informado já está em uso.',
-            'document.cpf' => 'O CPF informado não é válido.',
             'birth_date.required' => 'A data de nascimento deve ser informada.',
             'birth_date.date_format' => 'A data de nascimento esta no formato inválido. O válido é DD/MM/YYYY',
             'phone_number.required' => 'O número de telefone é obrigatório.',

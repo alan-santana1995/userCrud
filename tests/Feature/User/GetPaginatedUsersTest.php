@@ -13,13 +13,14 @@ class GetPaginatedUsersTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * A basic feature test example.
+     * Testa uma paginação de usuários padrão
      */
     public function test_get_users_success(): void
     {
         $user = User::factory()->create();
 
         $response = $this->getJson(route('users.index'));
+
         $response->assertOk()
             ->assertJsonFragment(
                 [

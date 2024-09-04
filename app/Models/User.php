@@ -48,13 +48,9 @@ class User extends Model
         'status',
     ];
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope(
-            'filter-inactive',
-            fn (Builder $q) => $q->filterInactive()
-        );
-    }
+    protected $appends = [
+        'full_name'
+    ];
 
     public function getStatusAttribute(): bool
     {
@@ -64,10 +60,5 @@ class User extends Model
     public function getFullNameAttribute(): string
     {
         return $this->attributes['name'] . ' ' . $this->attributes['last_name'];
-    }
-
-    public function scopeFilterInactive(Builder $q): Builder
-    {
-        return $q->whereStatus(true);
     }
 }

@@ -17,12 +17,12 @@ abstract class UserFormParameters
         private string $city,
         private string $neighborhood,
         private string $address,
-        private string $id = null,
+        private ?string $id = null,
 
     ) {
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -88,11 +88,12 @@ abstract class UserFormParameters
     {
         return [
             'name' => $this->name,
+            'last_name' => $this->lastName,
             'email' => $this->email,
             'document' => $this->document,
-            'birthDate' => $this->birthDate,
-            'phoneNumber' => $this->phoneNumber,
-            'zipCode' => $this->zipCode,
+            'birth_date' => $this->birthDate,
+            'phone_number' => $this->phoneNumber,
+            'zip_code' => $this->zipCode,
             'uf' => $this->uf,
             'city' => $this->city,
             'neighborhood' => $this->neighborhood,

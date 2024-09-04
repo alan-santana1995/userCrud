@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Domain\User\Enum\UfEnum;
+use App\Domain\User\Rules\CPF;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -45,6 +46,7 @@ class UserFormRequest extends FormRequest
                 'string',
                 'max:11',
                 Rule::unique(User::class, 'document'),
+                new CPF
             ],
             'birth_date' => [
                 'required',
@@ -85,12 +87,20 @@ class UserFormRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $this->merge(
-            [
-                'zip_code' => preg_replace('/\D+/', '', $this->get('zip_code', '')),
-                'phone_number' => preg_replace('/\D+/', '', $this->get('zip_code', '')),
-                'uf' => strtolower($this->get('uf', '')),
-            ]
-        );
+        $data = [
+            preg_replace(
+                '/\D+/',
+                '',
+                [
+                    'document' => $this->get('document', ''),
+                    'zip_code' => $this->get('zip_code', ''),
+                    'phone_number' => $this->get('phone_number', ''),
+                ]
+            )
+        ];
+
+        $data['uf'] = strtolower($this->get('uf', ''));
+
+        $this->merge($data);
     }
 }
