@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'document' => fake()->regexify('\d{11}'),
             'birth_date' => fake()->date(),
             'phone_number' => fake()->regexify('\d{11}'),
-            'zip_code' => fake()->regexify('\d{7}'),
+            'zip_code' => fake()->regexify('\d{8}'),
             'uf' => fake()->randomElement(UfEnum::valuesToArray()),
             'city' => fake()->name(),
             'neighborhood' => fake()->name(),

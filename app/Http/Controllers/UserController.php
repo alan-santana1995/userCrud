@@ -9,6 +9,8 @@ use App\Domain\User\Actions\UpdateUser;
 use App\Domain\User\DTO\CreateNewUserParameters;
 use App\Domain\User\DTO\GetPaginatedUsersParameters;
 use App\Domain\User\DTO\UpdateUserParameters;
+use App\Domain\User\DTO\UserFormParameters;
+use App\Domain\ViaCep\Client\ViaCepClient;
 use App\Http\Requests\CreateNewUserRequest;
 use App\Http\Requests\GetUsersRequest;
 use App\Http\Requests\UniqueDocumentRequest;
@@ -22,7 +24,8 @@ class UserController extends Controller
         private GetPaginatedUsers $getPaginatedUsers,
         private GetUserFromId $getUserFromId,
         private UpdateUser $updateUser,
-        private CreateNewUser $createNewUser
+        private CreateNewUser $createNewUser,
+        private ViaCepClient $viaCepClient,
     ) {
     }
 
@@ -48,7 +51,10 @@ class UserController extends Controller
      */
     public function store(CreateNewUserRequest $request)
     {
-        $parameters = CreateNewUserParameters::fromRequest($request);
+        $parameters = UserFormParameters::fromRequest($request);
+
+        $zipCodeInfo = $this->viaCepClient->get($parameters->getZipCode());
+        $parameters->setZipCodeInfo($zipCodeInfo);
 
         $newId = $this->createNewUser->execute($parameters);
 
@@ -74,7 +80,12 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $updateUserRequest)
     {
-        $parameters = UpdateUserParameters::fromRequest($updateUserRequest);
+        $parameters = UserFormParameters::fromRequest($updateUserRequest);
+
+        if ($parameters->getZipCode() !== null) {
+            $zipCodeInfo = $this->viaCepClient->get($parameters->getZipCode());
+            $parameters->setZipCodeInfo($zipCodeInfo);
+        }
 
         $user = $this->updateUser->execute($parameters);
 

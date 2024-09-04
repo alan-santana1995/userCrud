@@ -1,24 +1,24 @@
 <?php
+
 namespace App\Domain\User\DTO;
 
+use App\Domain\ViaCep\DTO\ViaCepZipCodeInformation;
 use App\Http\Requests\UserFormRequest;
+use Illuminate\Support\Arr;
 
-abstract class UserFormParameters
+class UserFormParameters
 {
     public function __construct(
-        private string $name,
-        private string $lastName,
-        private string $email,
-        private string $document,
-        private string $birthDate,
-        private string $phoneNumber,
-        private string $zipCode,
-        private string $uf,
-        private string $city,
-        private string $neighborhood,
-        private string $address,
-        private ?string $id = null,
-
+        private ?string $id,
+        private ?string $name,
+        private ?string $lastName,
+        private ?string $email,
+        private ?string $document,
+        private ?string $birthDate,
+        private ?string $phoneNumber,
+        private ?string $zipCode,
+        private ?bool $status,
+        private ?ViaCepZipCodeInformation $zipCodeInfo = null,
     ) {
     }
 
@@ -27,77 +27,88 @@ abstract class UserFormParameters
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function getDocument(): string
+    public function getDocument(): ?string
     {
         return $this->document;
     }
 
-    public function getBirthDate(): string
+    public function getBirthDate(): ?string
     {
         return $this->birthDate;
     }
 
-    public function getPhoneNumber(): string
+    public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
     }
 
-    public function getZipCode(): string
+    public function getZipCode(): ?string
     {
         return $this->zipCode;
     }
 
-    public function getUf(): string
-    {
-        return $this->uf;
+    public function setZipCodeInfo(
+        ViaCepZipCodeInformation $zipCodeInfo
+    ) {
+        $this->zipCodeInfo = $zipCodeInfo;
     }
 
-    public function getCity(): string
+    public static function fromRequest(UserFormRequest $request): self
     {
-        return $this->city;
-    }
+        $data = $request->validated();
 
-    public function getNeighborhood(): string
-    {
-        return $this->neighborhood;
+        return new self(
+            id: Arr::get($data, 'id'),
+            name: Arr::get($data, 'name'),
+            lastName: Arr::get($data, 'last_name'),
+            email: Arr::get($data, 'email'),
+            document: Arr::get($data, 'document'),
+            birthDate: Arr::get($data, 'birth_date'),
+            phoneNumber: Arr::get($data, 'phone_number'),
+            zipCode: Arr::get($data, 'zip_code'),
+            status: Arr::get($data, 'status', true)
+        );
     }
-
-    public function getAddress(): string
-    {
-        return $this->address;
-    }
-
-    abstract public static function fromRequest(UserFormRequest $request): self;
 
     public function toArray()
     {
-        return [
+        $data = [
             'name' => $this->name,
             'last_name' => $this->lastName,
             'email' => $this->email,
             'document' => $this->document,
             'birth_date' => $this->birthDate,
             'phone_number' => $this->phoneNumber,
+            'status' => $this->status,
             'zip_code' => $this->zipCode,
-            'uf' => $this->uf,
-            'city' => $this->city,
-            'neighborhood' => $this->neighborhood,
-            'address' => $this->address,
         ];
+        if ($this->zipCodeInfo) {
+            $data['uf'] = $this->zipCodeInfo?->getUf();
+            $data['city'] = $this->zipCodeInfo?->getLocalidade();
+            $data['neighborhood'] = $this->zipCodeInfo?->getBairro();
+
+            $address = trim(
+                $this->zipCodeInfo?->getLogradouro() . ' ' .
+                $this->zipCodeInfo?->getComplemento()
+            );
+            $data['address'] = $address;
+        }
+
+        return $data;
     }
 }

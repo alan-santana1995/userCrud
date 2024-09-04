@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Domain\User\Enum\UfEnum;
-use App\Domain\User\Rules\CPF;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Lang;
 
 class UserFormRequest extends FormRequest
 {
@@ -18,71 +15,9 @@ class UserFormRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function messages()
     {
-        return [
-            'name' => [
-                'required',
-                'string',
-                'max:100',
-            ],
-            'last_name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-            'email' => [
-                'required',
-                'email',
-                Rule::unique(User::class, 'email'),
-            ],
-            'document' => [
-                'required',
-                'string',
-                'max:11',
-                Rule::unique(User::class, 'document'),
-                new CPF
-            ],
-            'birth_date' => [
-                'required',
-                'date_format:Y-m-d',
-            ],
-            'phone_number' => [
-                'required',
-                'string',
-                'max:11',
-            ],
-            'zip_code' => [
-                'required',
-                'string',
-                'max:7',
-            ],
-            'uf' => [
-                'required',
-                'string',
-                Rule::enum(UfEnum::class),
-            ],
-            'city' => [
-                'required',
-                'string',
-                'max:100',
-            ],
-            'neighborhood' => [
-                'required',
-                'string',
-                'max:100',
-            ],
-            'address' => [
-                'required',
-                'string',
-                'max:255',
-            ]
-        ];
+        return Lang::get('user.user_form.messages');
     }
 
     protected function prepareForValidation()
@@ -102,5 +37,10 @@ class UserFormRequest extends FormRequest
         $data['uf'] = strtolower($this->get('uf', ''));
 
         $this->merge($data);
+    }
+
+    protected function getStatus()
+    {
+        return filter_var($this->get('status', true), FILTER_VALIDATE_BOOL);
     }
 }

@@ -3,15 +3,9 @@
 namespace Tests\Feature\User;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Tests\TestCase;
 
-class GetPaginatedUsersTest extends TestCase
+class GetPaginatedUsersTest extends UsersTestCase
 {
-    use WithoutMiddleware;
-    use RefreshDatabase;
-
     /**
      * Testa uma paginação de usuários padrão
      */

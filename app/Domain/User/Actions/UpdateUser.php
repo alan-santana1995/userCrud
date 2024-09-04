@@ -2,7 +2,7 @@
 
 namespace App\Domain\User\Actions;
 
-use App\Domain\User\DTO\UpdateUserParameters;
+use App\Domain\User\DTO\UserFormParameters;
 use App\Models\User;
 
 class UpdateUser
@@ -12,12 +12,15 @@ class UpdateUser
     ) {
     }
 
-    public function execute(UpdateUserParameters $parameters): bool
+    public function execute(UserFormParameters $parameters): bool
     {
+        $fields = array_filter(
+            $parameters->toArray(),
+            fn ($value) => $value !== null
+        );
+
         return $this->model
             ->whereId($parameters->getId())
-            ->update(
-                $parameters->toArray()
-            );
+            ->update($fields);
     }
 }

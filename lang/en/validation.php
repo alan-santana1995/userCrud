@@ -176,6 +176,9 @@ return [
         'cpf' => [
             'invalid' => 'The provided CPF number is invalid.',
         ],
+        'zip_code' => [
+            'invalid' => 'The provided Zip Code is not valid.',
+        ],
     ],
 
     /*
