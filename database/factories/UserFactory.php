@@ -26,7 +26,6 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->firstName(),
-            'last_name' => fake()->firstName(),
             'email' => fake()->unique()->safeEmail(),
             'document' => fake()->regexify('\d{11}'),
             'birth_date' => fake()->date(),

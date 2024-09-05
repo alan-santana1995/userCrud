@@ -18,7 +18,6 @@ class UpdateUsersTest extends UsersTestCase
         $user = User::factory()->create();
         $expectedData = [
             'name' => $this->faker()->name(),
-            'last_name' => $this->faker()->lastName()
         ];
 
         $response = $this->patchJson(

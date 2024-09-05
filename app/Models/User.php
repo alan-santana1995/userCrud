@@ -10,7 +10,6 @@ use Illuminate\Notifications\Notifiable;
 /**
  * @property int $id
  * @property string $name
- * @property string $last_name
  * @property string $email
  * @property string $document
  * @property string $birth_date
@@ -35,7 +34,6 @@ class User extends Model
      */
     protected $fillable = [
         'name',
-        'last_name',
         'email',
         'document',
         'birth_date',
@@ -48,17 +46,8 @@ class User extends Model
         'status',
     ];
 
-    protected $appends = [
-        'full_name'
-    ];
-
     public function getStatusAttribute(): bool
     {
         return filter_var($this->attributes['status'], FILTER_VALIDATE_BOOL);
-    }
-
-    public function getFullNameAttribute(): string
-    {
-        return $this->attributes['name'] . ' ' . $this->attributes['last_name'];
     }
 }

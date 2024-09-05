@@ -1,0 +1,7 @@
+.phpunit.result.cache
+.env
+Dockerfile
+mysql
+vendor
+node_modules
+UserCrud

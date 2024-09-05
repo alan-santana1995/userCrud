@@ -28,7 +28,6 @@ class CreateNewUsersTest extends UsersTestCase
         );
         $expectedData = [
             'name' => $user->name,
-            'last_name' => $user->last_name,
             'email' => $user->email,
             'document' => $user->document,
             'birth_date' => $user->birth_date,

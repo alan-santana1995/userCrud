@@ -11,7 +11,6 @@ class UserFormParameters
     public function __construct(
         private ?string $id,
         private ?string $name,
-        private ?string $lastName,
         private ?string $email,
         private ?string $document,
         private ?string $birthDate,
@@ -30,11 +29,6 @@ class UserFormParameters
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
     }
 
     public function getEmail(): ?string
@@ -75,7 +69,6 @@ class UserFormParameters
         return new self(
             id: Arr::get($data, 'id'),
             name: Arr::get($data, 'name'),
-            lastName: Arr::get($data, 'last_name'),
             email: Arr::get($data, 'email'),
             document: Arr::get($data, 'document'),
             birthDate: Arr::get($data, 'birth_date'),
@@ -89,7 +82,6 @@ class UserFormParameters
     {
         $data = [
             'name' => $this->name,
-            'last_name' => $this->lastName,
             'email' => $this->email,
             'document' => $this->document,
             'birth_date' => $this->birthDate,

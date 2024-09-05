@@ -22,11 +22,6 @@ class CreateNewUserRequest extends UserFormRequest
                 'string',
                 'max:100',
             ],
-            'last_name' => [
-                'required',
-                'string',
-                'max:255',
-            ],
             'email' => [
                 'required',
                 'email',

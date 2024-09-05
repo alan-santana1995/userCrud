@@ -27,10 +27,6 @@ class UpdateUserRequest extends UserFormRequest
                 'string',
                 'max:100',
             ],
-            'last_name' => [
-                'string',
-                'max:255',
-            ],
             'email' => [
                 'email',
                 Rule::unique(User::class, 'email'),

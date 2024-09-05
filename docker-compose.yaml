@@ -1,0 +1,28 @@
+services:
+  mysql:
+    image: mysql
+    container_name: user_manager_mysql
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - laravel
+  php:
+    build:
+      context: ./
+      dockerfile: Dockerfile.php
+    container_name: user_manager_php
+    depends_on:
+      - mysql
+    ports:
+      - 8000:8000
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
