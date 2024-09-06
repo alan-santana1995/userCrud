@@ -3,7 +3,7 @@
 namespace App\Domain\User\Actions;
 
 use App\Domain\User\DTO\UserFormParameters;
-use App\Models\User;
+use App\Domain\User\Models\User;
 
 class CreateNewUser
 {

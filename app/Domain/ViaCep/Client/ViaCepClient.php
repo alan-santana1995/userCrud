@@ -3,8 +3,8 @@
 namespace App\Domain\ViaCep\Client;
 
 use App\Domain\ViaCep\DTO\ViaCepZipCodeInformation;
+use App\Domain\ViaCep\Exceptions\InvalidZipCodeNumberException;
 use Illuminate\Support\Facades\Http;
-use InvalidZipCodeNumberException;
 
 class ViaCepClient
 {

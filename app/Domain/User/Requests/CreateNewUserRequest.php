@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Domain\User\Requests;
 
-use App\Domain\User\Enum\UfEnum;
 use App\Domain\User\Rules\CPF;
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Illuminate\Validation\Rule;
 
 class CreateNewUserRequest extends UserFormRequest
@@ -25,14 +24,12 @@ class CreateNewUserRequest extends UserFormRequest
             'email' => [
                 'required',
                 'email',
-                Rule::unique(User::class, 'email'),
             ],
             'document' => [
                 'required',
                 'string',
                 'max:11',
-                Rule::unique(User::class, 'document'),
-                new CPF
+                new CPF,
             ],
             'birth_date' => [
                 'required',

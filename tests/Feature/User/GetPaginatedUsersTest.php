@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\User;
 
-use App\Models\User;
+use App\Domain\User\Models\User;
 
 class GetPaginatedUsersTest extends UsersTestCase
 {

@@ -2,7 +2,7 @@
 
 namespace App\Domain\User\DTO;
 
-use App\Http\Requests\GetUsersRequest;
+use App\Domain\User\Requests\GetUsersRequest;
 
 class GetPaginatedUsersParameters
 {

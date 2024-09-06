@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Domain\User\Requests;
 
-use App\Domain\User\Enum\UfEnum;
 use App\Domain\User\Rules\CPF;
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends UserFormRequest

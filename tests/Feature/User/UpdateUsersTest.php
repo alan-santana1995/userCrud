@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\User;
 
-use App\Models\User;
+use App\Domain\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
 
 class UpdateUsersTest extends UsersTestCase

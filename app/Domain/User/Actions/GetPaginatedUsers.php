@@ -4,7 +4,7 @@ namespace App\Domain\User\Actions;
 
 use App\Domain\User\DTO\GetPaginatedUsersParameters;
 use App\Http\Resources\PaginatedUserResource;
-use App\Models\User;
+use App\Domain\User\Models\User;
 
 class GetPaginatedUsers
 {

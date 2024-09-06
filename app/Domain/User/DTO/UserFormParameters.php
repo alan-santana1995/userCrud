@@ -2,8 +2,8 @@
 
 namespace App\Domain\User\DTO;
 
+use App\Domain\User\Requests\UserFormRequest;
 use App\Domain\ViaCep\DTO\ViaCepZipCodeInformation;
-use App\Http\Requests\UserFormRequest;
 use Illuminate\Support\Arr;
 
 class UserFormParameters
@@ -66,6 +66,11 @@ class UserFormParameters
     {
         $data = $request->validated();
 
+        return self::fromArray($data);
+    }
+
+    public static function fromArray(array $data): self
+    {
         return new self(
             id: Arr::get($data, 'id'),
             name: Arr::get($data, 'name'),

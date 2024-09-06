@@ -1,7 +1,10 @@
 <?php
 
+namespace App\Domain\ViaCep\Exceptions;
+
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Support\Facades\Lang;
+use Throwable;
 
 class InvalidZipCodeNumberException extends Handler
 {

@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Domain\User\Controllers;
 
 use App\Domain\User\Actions\CreateNewUser;
 use App\Domain\User\Actions\GetPaginatedUsers;
 use App\Domain\User\Actions\GetUserFromId;
 use App\Domain\User\Actions\UpdateUser;
-use App\Domain\User\DTO\CreateNewUserParameters;
 use App\Domain\User\DTO\GetPaginatedUsersParameters;
-use App\Domain\User\DTO\UpdateUserParameters;
 use App\Domain\User\DTO\UserFormParameters;
+use App\Domain\User\Requests\CreateNewUserRequest;
+use App\Domain\User\Requests\GetUsersRequest;
+use App\Domain\User\Requests\UpdateUserRequest;
 use App\Domain\ViaCep\Client\ViaCepClient;
-use App\Http\Requests\CreateNewUserRequest;
-use App\Http\Requests\GetUsersRequest;
-use App\Http\Requests\UniqueDocumentRequest;
-use App\Http\Requests\UniqueEmailRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
@@ -39,11 +36,6 @@ class UserController extends Controller
         $users = $this->getPaginatedUsers->execute($parameters);
 
         return response()->json($users);
-    }
-
-    public function uniqueValidation(UniqueEmailRequest|UniqueDocumentRequest $request): JsonResponse
-    {
-        return response()->json();
     }
 
     /**
@@ -90,5 +82,19 @@ class UserController extends Controller
         $user = $this->updateUser->execute($parameters);
 
         return response()->json($user);
+    }
+
+    public function destroy(string $id)
+    {
+        $parameters = UserFormParameters::fromArray(
+            [
+                'id' => $id,
+                'status' => false,
+            ]
+        );
+
+        $this->updateUser->execute($parameters);
+
+        return response()->json();
     }
 }

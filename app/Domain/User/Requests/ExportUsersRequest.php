@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Domain\User\Requests;
 
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UniqueEmailRequest extends FormRequest
+class ExportUsersRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,11 +22,7 @@ class UniqueEmailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => [
-                'required',
-                'email',
-                Rule::unique(User::class, 'email')
-            ]
+            //
         ];
     }
 }
