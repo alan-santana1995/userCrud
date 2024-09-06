@@ -14,16 +14,18 @@ class CreateNewUsersTest extends UsersTestCase
     /**
      * Testa a criação de novos usuários.
      * CPF obtido do site: https://www.4devs.com.br/gerador_de_cpf
-     * CEP da Av. Paulista
+     * CEP da Praça da Sé
      */
     public function test_create_new_users(): void
     {
         $this->mockViaCep();
+        $viaCepMockData = $this->getViaCepSuccessMockData();
 
         $user = User::factory()->make(
             [
                 'document' => '70075640031',
-                'zip_code' => "01310930"
+                'zip_code' => "01001000",
+                'uf' => 'sp'
             ]
         );
         $expectedData = [
@@ -43,7 +45,15 @@ class CreateNewUsersTest extends UsersTestCase
         $response->assertOk()
             ->assertJsonStructure(['id']);
 
-        $expectedData['status'] = true;
+        $expectedData = array_merge(
+            $expectedData,
+            [
+                'id' => $response->offsetGet('id'),
+                'status' => true,
+                'address' => $viaCepMockData->getEndereco()
+            ]
+        );
+
         $this->assertDatabaseHas(
             'users',
             $expectedData

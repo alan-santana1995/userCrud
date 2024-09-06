@@ -2,17 +2,27 @@
 
 namespace App\Domain\User\Controllers;
 
-use App\Domain\User\Requests\ExportUsersRequest;
+use App\Domain\User\Actions\ExportUsersToCsv;
+use App\Domain\User\Actions\GetAllUsers;
 use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class UserReportController extends Controller
 {
-    public function get(ExportUsersRequest $request)
+    public function __construct(
+        private ExportUsersToCsv $exportUsersToCsv,
+        private GetAllUsers $getAllUsers
+    ) {
+    }
+
+    public function csv(): BinaryFileResponse
     {
-        $userExporter = $this->userExportActionFactory->create($request->get('type'));
+        $users = $this->getAllUsers->execute();
 
-        $file = $userExporter->execute();
+        $fileInfo = $this->exportUsersToCsv->execute($users);
 
-        return response()->download($file);
+        return response()->download(
+            $fileInfo
+        );
     }
 }

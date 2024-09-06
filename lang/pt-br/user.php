@@ -58,5 +58,9 @@ return [
         'city' => 'Cidade',
         'neighborhood' => 'Bairro',
         'address' => 'Endereço',
+        'status' => 'Situação',
+    ],
+    'values' => [
+        'status' => '{1}Ativo|{0}Inativo'
     ]
 ];

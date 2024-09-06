@@ -2,10 +2,12 @@
 
 namespace App\Domain\User\Models;
 
+use Database\Factories\Domain\User\Models\UserFactory;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * @property int $id
@@ -22,6 +24,7 @@ use Illuminate\Notifications\Notifiable;
  * @property boolean $status
  *
  * @method Builder filterInactive()
+ * @method UserFactory factory()
  */
 class User extends Model
 {
@@ -49,5 +52,15 @@ class User extends Model
     public function getStatusAttribute(): bool
     {
         return filter_var($this->attributes['status'], FILTER_VALIDATE_BOOL);
+    }
+
+    public function getUfAttribute(): string
+    {
+        return strtoupper($this->attributes['uf']);
+    }
+
+    public function getTextualStatusAttribute(): string
+    {
+        return Lang::choice("user.values.status", $this->attributes['status']);
     }
 }

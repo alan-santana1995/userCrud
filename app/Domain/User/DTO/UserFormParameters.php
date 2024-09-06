@@ -85,7 +85,7 @@ class UserFormParameters
 
     public function toArray()
     {
-        $data = [
+        return [
             'name' => $this->name,
             'email' => $this->email,
             'document' => $this->document,
@@ -93,19 +93,10 @@ class UserFormParameters
             'phone_number' => $this->phoneNumber,
             'status' => $this->status,
             'zip_code' => $this->zipCode,
+            'uf' => $this->zipCodeInfo?->getUf(),
+            'city' => $this->zipCodeInfo?->getLocalidade(),
+            'neighborhood' => $this->zipCodeInfo?->getBairro(),
+            'address' => $this->zipCodeInfo?->getEndereco(),
         ];
-        if ($this->zipCodeInfo) {
-            $data['uf'] = $this->zipCodeInfo?->getUf();
-            $data['city'] = $this->zipCodeInfo?->getLocalidade();
-            $data['neighborhood'] = $this->zipCodeInfo?->getBairro();
-
-            $address = trim(
-                $this->zipCodeInfo?->getLogradouro() . ' ' .
-                $this->zipCodeInfo?->getComplemento()
-            );
-            $data['address'] = $address;
-        }
-
-        return $data;
     }
 }

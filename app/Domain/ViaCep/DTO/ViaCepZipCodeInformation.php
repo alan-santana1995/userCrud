@@ -88,6 +88,11 @@ class ViaCepZipCodeInformation
         return $this->siafi;
     }
 
+    public function getEndereco(): string
+    {
+        return implode(', ', [$this->logradouro, $this->complemento]);
+    }
+
     public static function fromArray(array $data): self
     {
         return new self(

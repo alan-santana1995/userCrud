@@ -15,19 +15,25 @@ class UsersTestCase extends TestCase
 
     protected function mockViaCep(): void
     {
-        $mockDataPath = base_path(
-            'tests' . DIRECTORY_SEPARATOR .'mocks' . DIRECTORY_SEPARATOR .'via_cep_success.json'
-        );
-        $mockData = ViaCepZipCodeInformation::fromArray(
-            json_decode(
-                file_get_contents($mockDataPath),
-                true
-            )
-        );
+        $mockData = $this->getViaCepSuccessMockData();
         Http::fake(
             [
                 env('VIA_CEP_API_URL') => $mockData
             ]
+        );
+    }
+
+    protected function getViaCepSuccessMockData(): ViaCepZipCodeInformation
+    {
+        $mockDataPath = base_path(
+            'tests' . DIRECTORY_SEPARATOR .'mocks' . DIRECTORY_SEPARATOR .'via_cep_success.json'
+        );
+
+        return ViaCepZipCodeInformation::fromArray(
+            json_decode(
+                file_get_contents($mockDataPath),
+                true
+            )
         );
     }
 }

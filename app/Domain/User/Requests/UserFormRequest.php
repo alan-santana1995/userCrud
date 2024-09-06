@@ -22,21 +22,30 @@ class UserFormRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $data = [
+        $data = $this->all();
+
+        foreach ($data as &$field) {
+            $field = strip_tags(trim($field));
+        }
+
+        $data = array_merge(
+            $data,
             preg_replace(
                 '/\D+/',
                 '',
-                [
-                    'document' => $this->get('document', ''),
-                    'zip_code' => $this->get('zip_code', ''),
-                    'phone_number' => $this->get('phone_number', ''),
-                ]
+                $this->all(
+                    [
+                        'document',
+                        'zip_code',
+                        'phone_number',
+                    ]
+                )
             )
-        ];
+        );
 
-        $data['uf'] = strtolower($this->get('uf', ''));
-
-        $this->merge($data);
+        $this->merge(
+            array_filter($data, fn ($value) => $value !== "" && $value !== null)
+        );
     }
 
     protected function getStatus()

@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'document' => fake()->regexify('\d{11}'),
             'birth_date' => fake()->date(),
-            'phone_number' => fake()->regexify('\d{11}'),
+            'phone_number' => fake()->regexify('\d{10}'),
             'zip_code' => fake()->regexify('\d{8}'),
             'uf' => fake()->randomElement(UfEnum::valuesToArray()),
             'city' => fake()->name(),
@@ -44,6 +44,13 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'status' => false,
+        ]);
+    }
+
+    public function randomStatus(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => fake()->randomElement([true, false]),
         ]);
     }
 }
