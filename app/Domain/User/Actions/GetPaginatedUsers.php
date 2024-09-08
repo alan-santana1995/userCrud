@@ -13,7 +13,10 @@ class GetPaginatedUsers
     }
     public function execute(GetPaginatedUsersParameters $parameters): PaginatedUserResource
     {
-        $users = $this->user->newQuery()->paginate(
+        $users = $this->user->newQuery()
+        ->whereStatus(true)
+        ->latest()
+        ->paginate(
             perPage: $parameters->getPageSize(),
             page: $parameters->getPage(),
         );

@@ -22,4 +22,23 @@ class GetPaginatedUsersTest extends UsersTestCase
                 ]
             );
     }
+
+    /**
+     * Somente usuários ativos devem ser retornados
+     */
+    public function test_get_only_active_users(): void
+    {
+        $user = User::factory()->create();
+        User::factory()->inactive()->create();
+
+        $response = $this->getJson(route('users.index'));
+
+        $response->assertOk()
+            ->assertJsonFragment(
+                [
+                    'data' => [$user->toArray()]
+                ]
+            )
+            ->assertJsonCount(1, 'data');
+    }
 }

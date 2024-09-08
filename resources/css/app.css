@@ -1,0 +1,51 @@
+#top-menu {
+    height: 3rem;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #dfdfdf;
+}
+
+#top-menu-text {
+    font-size: 2rem;
+    text-decoration: inherit;
+    color: black;
+}
+
+#top-menu-text:hover > span {
+    transition: color 500ms;
+    color: #0084d1;
+}
+
+#content-wrapper {
+    display: flex;
+    justify-content: space-around;
+}
+
+#user-creation-button-container {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+#create-user-btn {
+    text-decoration: inherit;
+    color: white;
+    background: #0084d1;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+#create-user-btn:hover:not(:disabled) {
+    background: #66c6ff;
+}
+
+#create-user-btn:active:not(:disabled) {
+    background: #006dad;
+}
+
+.small-icon {
+    width: 21px;
+}
+
+.clickable {
+    cursor: pointer;
+}

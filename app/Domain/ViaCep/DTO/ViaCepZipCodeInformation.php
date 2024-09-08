@@ -90,7 +90,13 @@ class ViaCepZipCodeInformation
 
     public function getEndereco(): string
     {
-        return implode(', ', [$this->logradouro, $this->complemento]);
+        $address = $this->logradouro;
+
+        if (!empty($this->complemento)) {
+            $address .= ", {$this->complemento}";
+        }
+
+        return $address;
     }
 
     public static function fromArray(array $data): self

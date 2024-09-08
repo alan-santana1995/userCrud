@@ -16,6 +16,6 @@ class GetUserFromId
         return $this->user->newQuery()->when(
             $fields,
             fn (Builder $q, $fields) => $q->select($fields)
-        )->firstOrFail($id);
+        )->findOrFail($id);
     }
 }

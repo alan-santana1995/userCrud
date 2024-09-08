@@ -28,12 +28,10 @@ class UpdateUserRequest extends UserFormRequest
             ],
             'email' => [
                 'email',
-                Rule::unique(User::class, 'email'),
             ],
             'document' => [
                 'string',
                 'max:11',
-                Rule::unique(User::class, 'document'),
                 new CPF
             ],
             'birth_date' => [

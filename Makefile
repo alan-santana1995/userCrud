@@ -1,3 +1,9 @@
+install:
+    cp .env.example .env
+    composer install
+    npm install
+    npx mix
+    php artisan key:generate
 docker:
 	docker compose up --build -d php
 mysql-cli:

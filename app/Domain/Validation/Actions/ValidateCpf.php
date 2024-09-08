@@ -15,24 +15,26 @@ class ValidateCpf
             InvalidCpfNumberException::class
         );
 
-        $sum = 0;
-        for ($weight = 10, $i = 0; $weight >= 2;$i++,$weight--) {
-            $sum += $cpf[$i] * $weight;
-        }
-
-        $rest = $sum % 11;
-        $firstValidationDigit = 0;
-        if ($rest >= 2) {
-            $firstValidationDigit = 11 - $rest;
-        }
-
-        throw_if(
-            $cpf[9] != $firstValidationDigit,
-            InvalidCpfNumberException::class
+        $this->validateDigit(
+            cpf: $cpf,
+            weightStartingValue: 10,
+            validationDigitIndex: 9
         );
 
+        $this->validateDigit(
+            cpf: $cpf,
+            weightStartingValue: 11,
+            validationDigitIndex: 10
+        );
+    }
+
+    private function validateDigit(
+        string $cpf,
+        int $weightStartingValue,
+        int $validationDigitIndex
+    ) {
         $sum = 0;
-        for ($weight = 11, $i = 0; $weight >= 2;$i++,$weight--) {
+        for ($weight = $weightStartingValue, $i = 0; $weight >= 2;$i++,$weight--) {
             $sum += $cpf[$i] * $weight;
         }
 
@@ -43,7 +45,7 @@ class ValidateCpf
         }
 
         throw_if(
-            $cpf[10] != $secondValidationDigit,
+            $cpf[$validationDigitIndex] != $secondValidationDigit,
             InvalidCpfNumberException::class
         );
     }
