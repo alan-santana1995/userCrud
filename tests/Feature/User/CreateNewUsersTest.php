@@ -22,7 +22,7 @@ class CreateNewUsersTest extends UsersTestCase
     public function test_create_new_users(): void
     {
         $this->mockViaCep();
-        $viaCepMockData = $this->getViaCepSuccessMockData();
+        $viaCepMockData = $this->getViaCepMockData($this->getSuccessMockFileName());
 
         $user = User::factory()->make(
             [

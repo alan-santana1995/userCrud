@@ -7,9 +7,19 @@ use Illuminate\Support\Facades\Http;
 
 trait ViaCepMock
 {
+    protected function getSuccessMockFileName(): string
+    {
+        return 'via_cep_success.json';
+    }
+
+    protected function getErrorMockFileName(): string
+    {
+        return 'via_cep_error.json';
+    }
+
     protected function mockViaCep(): void
     {
-        $mockData = $this->getViaCepMockData('via_cep_success.json');
+        $mockData = $this->getViaCepMockData($this->getSuccessMockFileName());
         Http::fake(
             [
                 env('VIA_CEP_API_URL') => $mockData
@@ -19,7 +29,7 @@ trait ViaCepMock
 
     protected function mockViaCepError(): void
     {
-        $mockData = $this->getViaCepMockFile('via_cep_error.json');
+        $mockData = $this->getViaCepMockFile($this->getErrorMockFileName());
         Http::fake(
             [
                 env('VIA_CEP_API_URL') => json_decode(

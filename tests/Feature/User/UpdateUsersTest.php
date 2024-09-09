@@ -71,7 +71,6 @@ class UpdateUsersTest extends UsersTestCase
         );
     }
 
-
     /**
      * Testa a validação de cep ao editar um usuário.
      */
