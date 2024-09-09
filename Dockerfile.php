@@ -24,7 +24,7 @@ RUN apk add --no-cache \
         exif \
         pcntl && \
     docker-php-ext-configure zip && \
-    composer install --no-dev && \
+    composer install && \
     php artisan key:generate && \
     php artisan optimize
 

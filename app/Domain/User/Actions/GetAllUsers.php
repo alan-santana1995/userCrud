@@ -13,6 +13,6 @@ class GetAllUsers
 
     public function execute(): Collection
     {
-        return $this->user->get();
+        return $this->user->newQuery()->latest()->get();
     }
 }

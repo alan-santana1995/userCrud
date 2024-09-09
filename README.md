@@ -40,6 +40,7 @@ CREATE USER 'manager'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON user_management.* TO 'manager'@'%';
 FLUSH PRIVILEGES;
 ```
+**Importante:** Espere alguns segundos após a finalização do build do docker-compose para evitar erros ao tentar conectar no mysql-cli.
 
 Após isso, confirme se as credenciais do env condizem com o dos comandos acima e execute o comando `php artisan migrate --fresh` (acrescente "--seed" ao final do comando caso queira que o laravel carregue 100 usuários com dados de exemplo no banco para você).
 
