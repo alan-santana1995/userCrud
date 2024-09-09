@@ -8,8 +8,18 @@ Versões das tecnologias usadas:
 
 ## Execução local
 
+Para iniciar execute os comandos abaixo:
 
-Para iniciar execute o comando `make install`, isso irá rodar todos os comandos básicos necessários para executar o projeto.
+```shell
+    cp .env.example .env
+	composer install
+	npm install
+	php artisan key:generate
+	npx mix
+```
+
+Esses são todos os comandos básicos necessários para executar o projeto.
+
 Caso deseje, o projeto possui um docker-compose com mysql e php já configurados e para facilitar foi feito um Makefile onde basta executar o comando `make docker` que irá inicializar os services configurados, expondo o projeto laravel na porta 8000 e o banco na porta 3306.
 
 ### Front End
