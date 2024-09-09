@@ -18,7 +18,7 @@ class ExportUsersToCsv
     public function execute(Collection $users): SplFileInfo
     {
         $file = new SplFileObject(
-            sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'user_export_' . date('Y-m-d') . '.csv',
+            sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'users_export_' . date('Y-m-d') . '.csv',
             'w+'
         );
 

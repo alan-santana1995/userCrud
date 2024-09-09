@@ -140,7 +140,7 @@
             <button
                 id="user-form-submit-btn"
                 class="btn"
-                :disabled="!(validZipCode && validDocument && validEmail) || disableForm"
+                :disabled="!(this.validZipCode && this.validDocument && this.validEmail) || this.disableForm"
                 @click.prevent="submit()"
             >
                 Salvar
@@ -194,35 +194,13 @@ export default {
             if (typeof oldVal === undefined || newVal === '') {
                 return;
             }
-            // https://gist.github.com/gregseth/5582254
-            this.validEmail = newVal.match(
-                /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/i
-            )
-
-            if (!this.validEmail) {
-                this.$toast.error('O email informado não é válido.')
-                this.$refs.email.focus()
-            }
+            this.validEmail = this.validateEmail()
         },
         'form.document'(newVal, oldVal) {
             if (typeof oldVal === undefined || newVal === '') {
                 return;
             }
-            try {
-                let document = newVal.replace(/\D+/g, '');
-
-                if (document.length < 11) {
-                    throw this.invalidDocumentErrorMessage
-                }
-
-                this.validateDocumentValidationDigit(document, 10, 9)
-                this.validateDocumentValidationDigit(document, 11, 10)
-                this.validDocument = true
-            } catch (e) {
-                this.$toast.error(e)
-                console.error(e)
-                this.$refs.document.focus()
-            }
+            this.validDocument = this.validateDocument()
         }
     },
     methods: {
@@ -246,6 +224,11 @@ export default {
                     throw 'Nenhum e-mail informado!';
                 }
 
+                if (!this.validateEmail(this.form.email)) {
+                    this.$refs.email.focus();
+                    throw 'Nenhum e-mail informado!';
+                }
+
                 if (this.form.birth_date.length === 0 || new Date(this.form.birth_date) == 'Invalid Date') {
                     this.$refs.birthDate.focus();
                     throw 'Nenhuma data de nascimento informada!';
@@ -253,7 +236,12 @@ export default {
 
                 if (this.form.document.length === 0) {
                     this.$refs.document.focus();
-                    throw 'Nenhum nome informado!';
+                    throw 'Nenhum CPF informado!';
+                }
+
+                if (!this.validateDocument()) {
+                    this.$refs.document.focus();
+                    throw 'CPF informado inválido!';
                 }
 
                 if (this.form.phone_number.length === 0) {
@@ -261,9 +249,9 @@ export default {
                     throw 'Nenhum Telefone informado!';
                 }
 
-                if (this.form.zip_code.length === 0) {
+                if (this.form.zip_code.length !== 8) {
                     this.$refs.zipCode.focus();
-                    throw 'Nenhum CEP informado!'
+                    throw 'O CEP informado não é válido!'
                 }
             } catch (e) {
                 this.stopLoading();
@@ -291,6 +279,10 @@ export default {
                 .catch((error) => {
                     this.stopLoading();
                     console.log(error);
+                    if (error.response.status === 422) {
+                        this.$toast.error(error.response.data.message);
+                        return;
+                    }
                     this.$toast.error('Ocorreu um erro ao tentar atualizar o usuário');
                 });
         },
@@ -306,6 +298,10 @@ export default {
                 .catch((error) => {
                     this.stopLoading();
                     console.log(error);
+                    if (error.response.status === 422) {
+                        this.$toast.error(error.response.data.message);
+                        return;
+                    }
                     this.$toast.error('Ocorreu um erro ao tentar criar o novo usuário');
                 });
         },
@@ -335,6 +331,56 @@ export default {
             this.zip_code_info.neighborhood = user.neighborhood
             this.zip_code_info.address = user.address;
         },
+        validateEmail() {
+            // https://gist.github.com/gregseth/5582254
+            let validEmail = this.form.email.match(
+                /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/i
+            )
+
+            if (!validEmail) {
+                this.$toast.error('O email informado não é válido.')
+                this.$refs.email.focus()
+                return false;
+            }
+
+            return true;
+        },
+        validateDocument() {
+            try {
+                let document = this.form.document.replace(/\D+/g, '');
+
+                if (document.length < 11) {
+                    throw this.invalidDocumentErrorMessage
+                }
+
+                this.validateDocumentValidationDigit(document, 10, 9)
+                this.validateDocumentValidationDigit(document, 11, 10)
+
+                return true
+            } catch (e) {
+                this.$toast.error(e)
+                console.error(e)
+                this.$refs.document.focus()
+            }
+
+            return false;
+        },
+        validateDocumentValidationDigit(document, weightStartingValue, validationDigitIndex) {
+            let sum = 0;
+            for (let weight = weightStartingValue, i = 0; weight >= 2;i++,weight--) {
+                sum += document[i] * weight;
+            }
+
+            let rest = sum % 11;
+            let validationDigit = 0;
+            if (rest >= 2) {
+                validationDigit = 11 - rest;
+            }
+
+            if (document[validationDigitIndex] != validationDigit) {
+                throw this.invalidDocumentErrorMessage
+            }
+        },
         validateZipCode() {
             if (this.disableForm) {
                 return;
@@ -343,8 +389,8 @@ export default {
             this.form.zip_code = this.form.zip_code.replace(/\D/g, '');
             if (this.form.zip_code.length !== 8) {
                 this.$toast.error('O CEP informado não é válido');
-                this.validatingCep = false;
-                this.$refs.zip_code.focus();
+                this.validZipCode = this.validatingCep = false;
+                this.$refs.zipCode.focus();
                 return;
             }
             viaCepAxios.get(`/${this.form.zip_code}/json`)
@@ -371,24 +417,12 @@ export default {
                 .catch((error) => {
                     console.error(error);
                     this.validatingCep = false;
+                    if (error.response.status === 422) {
+                        this.$toast.error(error.response.data.message);
+                        return;
+                    }
                     this.$toast.error('Ocorreu um erro ao tentar validar seu CEP, tente novamente...')
                 })
-        },
-        validateDocumentValidationDigit(document, weightStartingValue, validationDigitIndex) {
-            let sum = 0;
-            for (let weight = weightStartingValue, i = 0; weight >= 2;i++,weight--) {
-                sum += document[i] * weight;
-            }
-
-            let rest = sum % 11;
-            let validationDigit = 0;
-            if (rest >= 2) {
-                validationDigit = 11 - rest;
-            }
-
-            if (document[validationDigitIndex] != validationDigit) {
-                throw this.invalidDocumentErrorMessage
-            }
         },
     }
 }

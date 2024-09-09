@@ -4,10 +4,13 @@ namespace Tests\Feature\User;
 
 use App\Domain\User\Models\User;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Lang;
+use Tests\Traits\ViaCepMock;
 
 class UpdateUsersTest extends UsersTestCase
 {
     use WithFaker;
+    use ViaCepMock;
 
     /**
      * Testa a atualização de um usuário já cadastrado.
@@ -39,6 +42,9 @@ class UpdateUsersTest extends UsersTestCase
         );
     }
 
+    /**
+     * Testa disabilitar um usuário
+     */
     public function test_disable_user()
     {
         $user = User::factory()->create();
@@ -63,5 +69,39 @@ class UpdateUsersTest extends UsersTestCase
             'users',
             $expectedData
         );
+    }
+
+
+    /**
+     * Testa a validação de cep ao editar um usuário.
+     */
+    public function test_update_user_with_wrong_zip_code(): void
+    {
+        $this->mockViaCepError();
+
+        $user = User::factory()->create();
+        $expectedData = [
+            'zip_code' => "91919191",
+        ];
+
+        $response = $this->patchJson(
+            route(
+                'users.update',
+                [
+                    'user' => $user->id
+                ]
+            ),
+            $expectedData
+        );
+
+        $response->assertUnprocessable()
+            ->assertJsonFragment(
+                [
+                    'message' => Lang::get('validation.custom.zip_code.invalid'),
+                    'errors' => [
+                        'zip_code.invalid' => Lang::get('validation.custom.zip_code.invalid')
+                    ]
+                ]
+            );
     }
 }

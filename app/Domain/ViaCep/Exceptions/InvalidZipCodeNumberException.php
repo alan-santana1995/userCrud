@@ -2,21 +2,22 @@
 
 namespace App\Domain\ViaCep\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler;
+use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Lang;
-use Throwable;
 
-class InvalidZipCodeNumberException extends Handler
+class InvalidZipCodeNumberException extends Exception
 {
-    public function render($request, Throwable $e)
+    public function render()
     {
         return response()->json(
             [
+                'message' => Lang::get('validation.custom.zip_code.invalid'),
                 'errors' => [
-                    Lang::get('validation.custom.zip_code.invalid')
+                    'zip_code.invalid' => Lang::get('validation.custom.zip_code.invalid')
                 ]
             ],
-            422
+            Response::HTTP_UNPROCESSABLE_ENTITY
         );
     }
 }
