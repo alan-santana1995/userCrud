@@ -16,13 +16,20 @@
                 <th>#</th>
             </tr>
         </thead>
-        <tbody :hidden="loading">
+        <tbody :hidden="loading || users.length == 0">
             <user-row
                 v-for="(user) in users"
                 :key="user.id"
                 :user="user"
             >
             </user-row>
+        </tbody>
+        <tbody v-show="users.length == 0 && !loading">
+            <tr>
+                <td id="user-table-empty" colspan="12">
+                    Nenhum usuário encontrado...
+                </td>
+            </tr>
         </tbody>
         <tbody :hidden="!loading">
             <tr>
@@ -34,8 +41,14 @@
         <tfoot>
             <tr>
                 <td colspan="12">
+
                     <div id="user-table-page-information">
-                        Mostrando itens do {{ from }} até o {{ to }} do total de {{ total }}
+                        <div>
+                            Mostrar inativos: <input type="checkbox" v-model="showInactive">
+                        </div>
+                        <span>
+                            Mostrando itens do {{ from }} até o {{ to }} do total de {{ total }}
+                        </span>
                     </div>
                 </td>
             </tr>
@@ -73,7 +86,8 @@ export default {
             to: 1,
             total: 1,
             perPage: 10,
-            loading: true
+            loading: true,
+            showInactive: false,
         }
     },
     components: {
@@ -82,14 +96,20 @@ export default {
     mounted() {
         this.updateUsersTable(this.page)
     },
+    watch: {
+        showInactive() {
+            this.updateUsersTable(1)
+        }
+    },
     methods: {
         updateUsersTable(page) {
             this.loading = true
-            apiAxios.get(`/api/users?page=${page}&page_size=${this.perPage}`)
+            this.users = [];
+            apiAxios.get(`/api/users?page=${page}&page_size=${this.perPage}&show_inactives=${this.showInactive}`)
                 .then((response) => {
                     let data = response.data;
                     this.users = data.data;
-
+                    console.log(this.users.length)
                     this.page = data.current_page;
                     this.lastPage = data.last_page;
                     this.from = data.from;
@@ -106,74 +126,75 @@ export default {
         },
         criarNovoUsuario() {
             window.location = '/users/create'
-        },
-
+        }
     }
 }
 </script>
 
 <style>
-table#user-table {
-    width: 90rem;
-    height: 50rem;
-    border: 1px solid #bfbfbf;
-    border-radius: 5px;
-    margin-top: 10px;
-}
+    table#user-table {
+        width: 99rem;
+        max-height: 50rem;
+        border: 1px solid #bfbfbf;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
 
-#user-table > thead > tr > th:not(:last-child) {
-    border-right: 1px solid #cdcdcd;
-    padding: 5px;
-}
+    #user-table > thead > tr > th {
+        border-bottom: 1px solid #cdcdcd;
+    }
 
-.user-table-column {
-    border-bottom: 1px solid #bfbfbf;
-    padding: 1px 10px;
-}
+    #user-table > thead > tr > th:not(:last-child) {
+        border-right: 1px solid #cdcdcd;
+        padding: 5px;
+    }
 
-.user-table-row:hover {
-    background-color: #ededed;
-}
+    .user-table-column {
+        border-bottom: 1px solid #bfbfbf;
+        padding: 1px 10px;
+        font-size: 0.7em;
+    }
 
-.user-table-row:first-child > .user-table-column {
-    border-top: 1px solid #bfbfbf;
-}
+    .user-table-column:not(:last-child) {
+        border-right: 1px solid #bfbfbf;
+    }
 
-.user-table-column:not(:last-child) {
-    border-right: 1px solid #bfbfbf;
-}
+    .user-table-row:hover {
+        background-color: #ededed;
+    }
 
-#user-table-loading {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    font-size: 2rem;
-}
+    #user-table-loading,
+    #user-table-empty {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: 2rem;
+        border-bottom: 1px solid #cdcdcd;
+    }
 
-#user-table-page-information {
-    display: flex;
-    flex-direction: row-reverse;
-    margin-top: 10px;
-}
+    #user-table-page-information {
+        display: flex;
+        flex-direction: row;
+        margin-top: 10px;
+        justify-content: space-between;
+        padding: 0 10px;
+    }
 
-#user-table-pagination-control {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    column-gap: 10px;
-    padding: 10px 0;
-}
+    #user-table-pagination-control {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        column-gap: 10px;
+        padding: 10px 0;
+    }
 
-#user-table-pagination-control > div {
-    display: flex;
-    gap: 5px;
-}
+    #user-table-pagination-control > div {
+        display: flex;
+        gap: 5px;
+    }
 
-#user-table-pagination-control > div > button {
-}
-
-#user-table-pagination-control-center {
-    display: flex;
-    align-items: center;
-}
+    #user-table-pagination-control-center {
+        display: flex;
+        align-items: center;
+    }
 </style>

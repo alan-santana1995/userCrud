@@ -23,6 +23,7 @@ class GetUsersRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'show_inactives' => 'boolean',
             'page_size' => 'integer',
             'page' => 'integer|min:1'
         ];
@@ -46,6 +47,7 @@ class GetUsersRequest extends FormRequest
     {
         $this->merge(
             [
+                'show_inactives' => filter_var($this->query('show_inactives', false), FILTER_VALIDATE_BOOL),
                 'page' => filter_var($this->query('page', 1), FILTER_VALIDATE_INT),
                 'page_size' => filter_var($this->query('page_size', 20), FILTER_VALIDATE_INT)
             ]

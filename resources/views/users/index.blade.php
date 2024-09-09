@@ -4,11 +4,16 @@
 
 @section('view-content')
     <div id="app">
-        <div id="user-creation-button-container">
-            <a id="create-user-btn" href="{{ route('web.users.create') }}">
-                Criar Novo Usuário
-            </a>
+        <div class="container">
+            <div id="user-table-buttons">
+                <a id="export-user-btn" class="btn" href="{{ route('users.export.csv') }}" title="Exportar Usuários para CSV">
+                    CSV
+                </a>
+                <a id="create-user-btn" class="btn" href="{{ route('web.users.create') }}" title="Criar Novo Usuário">
+                    +
+                </a>
+            </div>
+            <user-table></user-table>
         </div>
-        <user-table></user-table>
     </div>
 @endsection

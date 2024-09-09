@@ -1,107 +1,152 @@
 <template>
-    <span> Nome: </span>
-    <input
-        type="text"
-        ref="name"
-        v-model.lazy.trim="form.name"
-        name="name"
-        :disabled="disableForm"
-    >
-    <br>
-    <span> E-mail: </span>
-    <input
-        type="email"
-        ref="email"
-        v-model.lazy.trim="form.email"
-        name="email"
-        :disabled="disableForm"
-    >
-    <br>
-    <span>CPF:</span>
-    <input
-        type="text"
-        ref="document"
-        v-model.lazy.trim="form.document"
-        name="document"
-        :disabled="disableForm"
-    >
-    <br>
-    <span> Data de Nascimento: </span>
-    <input
-        type="date"
-        ref="birthDate"
-        v-model.lazy.trim="form.birth_date"
-        name="birth_date"
-        :disabled="disableForm"
-    >
-    <br>
-    <span> Telefone: </span>
-    <input
-        type="text"
-        ref="phoneNumber"
-        v-model.lazy.trim="form.phone_number"
-        name="phone_number"
-        :disabled="disableForm"
-    >
-    <br>
-    <span> CEP: </span>
-    <input
-        type="text"
-        ref="zipCode"
-        v-model.lazy.trim="form.zip_code"
-        name="zip_code"
-        :disabled="disableForm || validatingCep"
-    >
-    <br>
-    <span>Status:</span>
-    <input
-        type="checkbox"
-        ref="status"
-        name="status"
-        v-model="form.status"
-    >
-    <br>
-    <span> Estado: </span>
-    <input
-        type="text"
-        ref="uf"
-        v-model="zip_code_info.uf"
-        name="uf" disabled
-    >
-    <br>
-    <span> Cidade: </span>
-    <input
-        type="text"
-        ref="city"
-        v-model="zip_code_info.city"
-        name="city" disabled
-    >
-    <br>
-    <span> Bairro: </span>
-    <input
-        type="text"
-        ref="neighborhood"
-        v-model="zip_code_info.neighborhood"
-        name="neighborhood" disabled
-    >
-    <br>
-    <span> Endereço: </span>
-    <input
-        type="text"
-        ref="address"
-        v-model="zip_code_info.address"
-        name="address" disabled
-    >
-    <br>
-    <button
-        :disabled="!(validZipCode && validDocument && validEmail)"
-        @click.prevent="submit()"
-    >
-        Salvar
-    </button>
+    <div id="user-form-main-wrapper" class="container">
+        <div id="user-form-header">
+            <h1 v-if="!this.id">
+                Cadastro de usuário
+            </h1>
+            <h1 v-if="this.id">
+                Atualizando usuário
+            </h1>
+        </div>
+        <hr>
+        <div id="user-form-body">
+            <div id="user-form-status-container" class="user-form-row-item">
+                <span>Status:</span>
+                <input
+                    type="checkbox"
+                    ref="status"
+                    name="status"
+                    v-model="form.status"
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span> Nome: </span>
+                <br>
+                <input
+                    type="text"
+                    ref="name"
+                    v-model.lazy.trim="form.name"
+                    name="name"
+                    :disabled="disableForm"
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span> E-mail: </span>
+                <br>
+                <input
+                    type="email"
+                    ref="email"
+                    v-model.lazy.trim="form.email"
+                    name="email"
+                    :disabled="disableForm"
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span>CPF:</span>
+                <br>
+                <input
+                    type="text"
+                    ref="document"
+                    placeholder="123.456.789-00"
+                    title="CPF (somente números)"
+                    v-model.lazy.trim="form.document"
+                    name="document"
+                    :disabled="disableForm"
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span> Data de Nascimento: </span>
+                <br>
+                <input
+                    type="date"
+                    ref="birthDate"
+                    v-model.lazy.trim="form.birth_date"
+                    name="birth_date"
+                    :disabled="disableForm"
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span> Telefone: </span>
+                <br>
+                <input
+                    type="text"
+                    ref="phoneNumber"
+                    placeholder="11 1234-5678"
+                    title="Telefone (somente números)"
+                    v-model.lazy.trim="form.phone_number"
+                    name="phone_number"
+                    :disabled="disableForm"
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span> CEP: </span>
+                <br>
+                <input
+                    type="text"
+                    ref="zipCode"
+                    title="Cep (somente números)"
+                    v-model.lazy.trim="form.zip_code"
+                    name="zip_code"
+                    :disabled="disableForm || validatingCep"
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span> Estado: </span>
+                <br>
+                <input
+                    type="text"
+                    ref="uf"
+                    v-model="zip_code_info.uf"
+                    name="uf" disabled
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span> Cidade: </span>
+                <br>
+                <input
+                    type="text"
+                    ref="city"
+                    v-model="zip_code_info.city"
+                    name="city" disabled
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span> Bairro: </span>
+                <br>
+                <input
+                    type="text"
+                    ref="neighborhood"
+                    v-model="zip_code_info.neighborhood"
+                    name="neighborhood" disabled
+                >
+            </div>
+            <div class="user-form-row-item">
+                <span> Endereço: </span>
+                <br>
+                <input
+                    type="text"
+                    ref="address"
+                    v-model="zip_code_info.address"
+                    name="address" disabled
+                >
+            </div>
+        </div>
+        <hr>
+        <div id="user-form-footer">
+            <button
+                id="user-form-submit-btn"
+                class="btn"
+                :disabled="!(validZipCode && validDocument && validEmail) || disableForm"
+                @click.prevent="submit()"
+            >
+                Salvar
+            </button>
+        </div>
+    </div>
 </template>
 
 <script>
+import { getUfName } from '../utils';
 
 export default {
     props: {
@@ -176,7 +221,7 @@ export default {
             }
         },
         'form.zip_code'(newVal, oldVal) {
-            if (typeof oldVal === undefined || newVal === '') {
+            if (oldVal == '' || newVal === '') {
                 return;
             }
             this.validatingCep = true;
@@ -193,7 +238,7 @@ export default {
                     if (typeof response.data.erro !== undefined && response.data.erro === "true") {
                         this.$toast.error('O CEP informado não é válido')
                         this.validZipCode = false;
-                        this.$refs.zip_code.focus()
+                        this.$refs.zipCode.focus()
                         return false;
                     }
 
@@ -209,6 +254,7 @@ export default {
                     }
                 })
                 .catch((error) => {
+                    console.error(error);
                     this.validatingCep = false;
                     this.$toast.error('Ocorreu um erro ao tentar validar seu CEP, tente novamente...')
                 })
@@ -285,9 +331,8 @@ export default {
         },
         updateUser() {
             apiAxios.put(`/api/users/${this.id}`, this.form)
-                .then((response) => {
+                .then(() => {
                     this.$toast.success('Usuário atualizado com sucesso.')
-                    this.stopLoading();
                     setTimeout(
                         () => window.location = `/users/${this.id}`,
                         5000
@@ -307,7 +352,6 @@ export default {
             apiAxios.post(`/api/users`,this.form)
                 .then((response) => {
                     this.$toast.success('Usuário criado com sucesso.')
-                    this.stopLoading();
                     setTimeout(
                         () => window.location = `/users/${response.data.id}`,
                         5000
@@ -346,7 +390,50 @@ export default {
             this.form.birth_date = user.birth_date;
             this.form.phone_number = user.phone_number;
             this.form.zip_code = user.zip_code;
+            this.form.status = user.status;
+            this.zip_code_info.uf = getUfName(user.uf);
+            this.zip_code_info.city = user.city
+            this.zip_code_info.neighborhood = user.neighborhood
+            this.zip_code_info.address = user.address;
         }
     }
 }
 </script>
+
+<style>
+    #user-form-header > h1 {
+        margin: 0;
+    }
+
+    #user-form-body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 20px 0 20px;
+    }
+
+    #user-form-status-container {
+        display: flex;
+        align-items: center;
+    }
+
+    #user-form-footer {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    #user-form-submit-btn {
+        background-color: #0084d1;
+    }
+
+    .user-form-row {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .user-form-row-item:not(#user-form-status-container) > input {
+        width: 98%;
+        padding: 3px 0 3px 5px;
+    }
+</style>

@@ -38,7 +38,7 @@ class CreateNewUserRequest extends UserFormRequest
             'phone_number' => [
                 'required',
                 'string',
-                'max:11',
+                'max:10',
             ],
             'zip_code' => [
                 'required',

@@ -39,7 +39,7 @@ class UpdateUserRequest extends UserFormRequest
             ],
             'phone_number' => [
                 'string',
-                'max:11',
+                'max:10',
             ],
             'zip_code' => [
                 'string',

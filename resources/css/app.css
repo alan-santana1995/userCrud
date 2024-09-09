@@ -1,7 +1,19 @@
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: #f1f1f1;
+    margin: 0;
+}
+
+hr {
+    opacity: 50%;
+}
+
 #top-menu {
     height: 3rem;
-    margin-bottom: 10px;
+    margin-bottom: 5rem;
     border-bottom: 1px solid #dfdfdf;
+    background-color: white;
+    padding: 10px;
 }
 
 #top-menu-text {
@@ -20,26 +32,21 @@
     justify-content: space-around;
 }
 
-#user-creation-button-container {
+#user-table-buttons {
     display: flex;
     flex-direction: row-reverse;
+    gap: 10px;
 }
 
-#create-user-btn {
-    text-decoration: inherit;
-    color: white;
-    background: #0084d1;
-    padding: 10px;
+#export-user-btn {
+    font-size: 0.8em;
+}
+
+.container {
+    border: 1px solid #bfbfbf;
     border-radius: 10px;
-    font-weight: bold;
-}
-
-#create-user-btn:hover:not(:disabled) {
-    background: #66c6ff;
-}
-
-#create-user-btn:active:not(:disabled) {
-    background: #006dad;
+    background: white;
+    padding: 25px;
 }
 
 .small-icon {
@@ -48,4 +55,38 @@
 
 .clickable {
     cursor: pointer;
+}
+
+.btn {
+    border: none;
+    border-radius: 10px;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    background: #0084d1;
+}
+
+.btn:hover:not(:disabled) {
+    background: #66c6ff;
+}
+
+.btn:active:not(:disabled) {
+    background: #006dad;
+}
+
+.btn:disabled {
+    background-color: #bfbfbf !important;
+}
+
+a.btn {
+    text-decoration: inherit;
+    font-size: 1.5em;
+    padding: 3px;
+    width: 35px;
+    text-align: center;
+    height: 35px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('document');
             $table->date('birth_date');
-            $table->string('phone_number', 11);
+            $table->string('phone_number', 10);
             $table->string('zip_code', 8);
             $table->enum('uf', UfEnum::valuesToArray());
             $table->string('city', 100);
