@@ -19,32 +19,39 @@ trait ViaCepMock
 
     protected function mockViaCep(): void
     {
-        $mockData = $this->getViaCepMockData($this->getSuccessMockFileName());
-        Http::fake(
-            [
-                env('VIA_CEP_API_URL') => $mockData
-            ]
+        $mockData = file_get_contents(
+            $this->getViaCepMockFile($this->getSuccessMockFileName())
         );
+
+        $this->fakeHttp($mockData);
     }
 
     protected function mockViaCepError(): void
     {
-        $mockData = $this->getViaCepMockFile($this->getErrorMockFileName());
+        $mockData = file_get_contents(
+            $this->getViaCepMockFile($this->getErrorMockFileName())
+        );
+
+        $this->fakeHttp($mockData);
+    }
+
+    private function fakeHttp(string $mockData)
+    {
         Http::fake(
-            [
-                env('VIA_CEP_API_URL') => json_decode(
-                    $mockData,
-                    true
-                )
-            ]
+            fn () => json_decode(
+                $mockData,
+                true
+            )
         );
     }
 
-    protected function getViaCepMockData(string $fileName): ViaCepZipCodeInformation
+    protected function getViaCepMockData(): ViaCepZipCodeInformation
     {
         return ViaCepZipCodeInformation::fromArray(
             json_decode(
-                file_get_contents($this->getViaCepMockFile($fileName)),
+                file_get_contents(
+                    $this->getViaCepMockFile($this->getSuccessMockFileName())
+                ),
                 true
             )
         );

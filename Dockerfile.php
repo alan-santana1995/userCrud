@@ -14,6 +14,7 @@ RUN apk add --no-cache \
         php83-dom \
         php83-fileinfo \
         php83-session \
+        php83-sqlite3 \
         php83-tokenizer \
         php83-xml \
         php83-xmlwriter && \
@@ -26,7 +27,7 @@ RUN apk add --no-cache \
     docker-php-ext-configure zip && \
     composer install && \
     php artisan key:generate && \
-    php artisan optimize
+    php artisan config:clear
 
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
 EXPOSE 8000
