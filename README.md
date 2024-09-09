@@ -22,6 +22,8 @@ Esses são todos os comandos básicos necessários para executar o projeto.
 
 Caso deseje, o projeto possui um docker-compose com mysql e php já configurados e para facilitar foi feito um Makefile onde basta executar o comando `make docker` que irá inicializar os services configurados, expondo o projeto laravel na porta 8000 e o banco na porta 3306.
 
+Caso não deseje usar o docker, basta configurar a conexão do mysql no arquivo .env e executar `php artisan serve`, por padrão o laravel iniciará o servidor web no endereço 127.0.0.1:8000.
+
 ### Front End
 
 O front foi feito em VueJS e para compilá-lo o projeto usa o laravel-mix. Para compilar os arquivos do front end, basta executar o comando `npx mix` ou `npx mix watch` para que ele fico observando por alterações nos arquivos da pasta resource.
@@ -38,3 +40,7 @@ CREATE USER 'manager'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON user_management.* TO 'manager'@'%';
 FLUSH PRIVILEGES;
 ```
+
+Após isso, confirme se as credenciais do env condizem com o dos comandos acima e execute o comando `php artisan migrate --fresh` (acrescente "--seed" ao final do comando caso queira que o laravel carregue 100 usuários com dados de exemplo no banco para você).
+
+Caso esteja usando docker, execute o comando `make php` e rode o migrate dentro do docker do php. Lembrando que ele usa o .env.docker para carregar as variáveis de ambiente, por isso, caso tenha alterado os valores dos comandos de exemplo, lembre-se de alterar neste .env também.

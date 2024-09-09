@@ -48,6 +48,7 @@
                     type="text"
                     ref="document"
                     placeholder="123.456.789-00"
+                    maxlength="11"
                     title="CPF (somente números)"
                     v-model.lazy.trim="form.document"
                     name="document"
@@ -73,6 +74,7 @@
                     ref="phoneNumber"
                     placeholder="11 1234-5678"
                     title="Telefone (somente números)"
+                    maxlength="10"
                     v-model.lazy.trim="form.phone_number"
                     name="phone_number"
                     :disabled="disableForm"
@@ -85,8 +87,10 @@
                     type="text"
                     ref="zipCode"
                     title="Cep (somente números)"
+                    maxlength="8"
                     v-model.lazy.trim="form.zip_code"
                     name="zip_code"
+                    @change="validateZipCode()"
                     :disabled="disableForm || validatingCep"
                 >
             </div>
@@ -146,7 +150,7 @@
 </template>
 
 <script>
-import { getUfName } from '../utils';
+import { formatCpf, getUfName } from '../utils';
 
 export default {
     props: {
@@ -219,20 +223,131 @@ export default {
                 console.error(e)
                 this.$refs.document.focus()
             }
+        }
+    },
+    methods: {
+        startLoading() {
+            this.disableForm = true;
         },
-        'form.zip_code'(newVal, oldVal) {
-            if (oldVal == '' || newVal === '') {
+        stopLoading() {
+            this.disableForm = false;
+        },
+        submit() {
+            this.startLoading();
+
+            try {
+                if (this.form.name.length === 0) {
+                    this.$refs.name.focus();
+                    throw 'Nenhum nome informado!';
+                }
+
+                if (this.form.email.length === 0) {
+                    this.$refs.email.focus();
+                    throw 'Nenhum e-mail informado!';
+                }
+
+                if (this.form.birth_date.length === 0 || new Date(this.form.birth_date) == 'Invalid Date') {
+                    this.$refs.birthDate.focus();
+                    throw 'Nenhuma data de nascimento informada!';
+                }
+
+                if (this.form.document.length === 0) {
+                    this.$refs.document.focus();
+                    throw 'Nenhum nome informado!';
+                }
+
+                if (this.form.phone_number.length === 0) {
+                    this.$refs.phoneNumber.focus();
+                    throw 'Nenhum Telefone informado!';
+                }
+
+                if (this.form.zip_code.length === 0) {
+                    this.$refs.zipCode.focus();
+                    throw 'Nenhum CEP informado!'
+                }
+            } catch (e) {
+                this.stopLoading();
+                this.$toast.error(e);
+                return;
+            }
+
+            if (this.id) {
+                this.updateUser()
+                this.stopLoading;
+                return;
+            }
+
+            this.createUser();
+        },
+        updateUser() {
+            apiAxios.put(`/api/users/${this.id}`, this.form)
+                .then(() => {
+                    this.$toast.success('Usuário atualizado com sucesso.')
+                    setTimeout(
+                        () => window.location = `/users/${this.id}`,
+                        5000
+                    );
+                })
+                .catch((error) => {
+                    this.stopLoading();
+                    console.log(error);
+                    this.$toast.error('Ocorreu um erro ao tentar atualizar o usuário');
+                });
+        },
+        createUser() {
+            apiAxios.post(`/api/users`,this.form)
+                .then((response) => {
+                    this.$toast.success('Usuário criado com sucesso.')
+                    setTimeout(
+                        () => window.location = `/users/${response.data.id}`,
+                        5000
+                    );
+                })
+                .catch((error) => {
+                    this.stopLoading();
+                    console.log(error);
+                    this.$toast.error('Ocorreu um erro ao tentar criar o novo usuário');
+                });
+        },
+        requestUserData() {
+            this.startLoading();
+            apiAxios.get(`/api/users/${this.id}`)
+                .then((response) => {
+                    this.loadFormData(response.data)
+                    this.stopLoading();
+                })
+                .catch((error) => {
+                    this.stopLoading();
+                    console.log(error);
+                    this.$toast.error('Ocorreu um erro ao tentar obter os dados do usuário informado. Recarregue a página.');
+                })
+        },
+        loadFormData(user) {
+            this.form.name = user.name;
+            this.form.email = user.email;
+            this.form.document = user.document;
+            this.form.birth_date = user.birth_date;
+            this.form.phone_number = user.phone_number;
+            this.form.zip_code = user.zip_code;
+            this.form.status = user.status;
+            this.zip_code_info.uf = getUfName(user.uf);
+            this.zip_code_info.city = user.city
+            this.zip_code_info.neighborhood = user.neighborhood
+            this.zip_code_info.address = user.address;
+        },
+        validateZipCode() {
+            if (this.disableForm) {
                 return;
             }
             this.validatingCep = true;
-            newVal = newVal.replace(/\D/g, '');
-            if (newVal.length !== 8) {
+            this.form.zip_code = this.form.zip_code.replace(/\D/g, '');
+            if (this.form.zip_code.length !== 8) {
                 this.$toast.error('O CEP informado não é válido');
                 this.validatingCep = false;
                 this.$refs.zip_code.focus();
                 return;
             }
-            viaCepAxios.get(`/${newVal}/json`)
+            viaCepAxios.get(`/${this.form.zip_code}/json`)
                 .then((response) => {
                     this.validatingCep = false;
                     if (typeof response.data.erro !== undefined && response.data.erro === "true") {
@@ -258,9 +373,7 @@ export default {
                     this.validatingCep = false;
                     this.$toast.error('Ocorreu um erro ao tentar validar seu CEP, tente novamente...')
                 })
-        }
-    },
-    methods: {
+        },
         validateDocumentValidationDigit(document, weightStartingValue, validationDigitIndex) {
             let sum = 0;
             for (let weight = weightStartingValue, i = 0; weight >= 2;i++,weight--) {
@@ -277,125 +390,6 @@ export default {
                 throw this.invalidDocumentErrorMessage
             }
         },
-        startLoading() {
-            this.disableForm = true;
-        },
-        stopLoading() {
-            this.disableForm = false;
-        },
-        submit() {
-            this.startLoading();
-
-            if (this.form.name.length === 0) {
-                this.$toast.error('Nenhum nome informado!');
-                this.$refs.name.focus();
-                return;
-            }
-
-            if (this.form.email.length === 0) {
-                this.$toast.error('Nenhum e-mail informado!');
-                this.$refs.email.focus();
-                return;
-            }
-
-            if (this.form.birth_date.length === 0) {
-                this.$toast.error('Nenhuma data de nascimento informada!');
-                this.$refs.birthDate.focus();
-                return;
-            }
-
-            if (this.form.document.length === 0) {
-                this.$toast.error('Nenhum nome informado!');
-                this.$refs.document.focus();
-                return;
-            }
-
-            if (this.form.phone_number.length === 0) {
-                this.$toast.error('Nenhum Telefone informado!');
-                this.$refs.phoneNumber.focus();
-                return;
-            }
-
-            if (this.form.zip_code.length === 0) {
-                this.$toast.error('Nenhum CEP informado!');
-                this.$refs.zipCode.focus();
-                return;
-            }
-
-            if (this.id) {
-                this.updateUser()
-                return;
-            }
-
-            this.createUser();
-        },
-        updateUser() {
-            apiAxios.put(`/api/users/${this.id}`, this.form)
-                .then(() => {
-                    this.$toast.success('Usuário atualizado com sucesso.')
-                    setTimeout(
-                        () => window.location = `/users/${this.id}`,
-                        5000
-                    );
-                })
-                .catch((error) => {
-                    this.stopLoading();
-                    if (typeof error.data.message !== undefined) {
-                        this.$toast.error(error.data.message);
-                        return;
-                    }
-
-                    this.$toast.error('Ocorreu um erro ao tentar atualizar o usuário');
-                });
-        },
-        createUser() {
-            apiAxios.post(`/api/users`,this.form)
-                .then((response) => {
-                    this.$toast.success('Usuário criado com sucesso.')
-                    setTimeout(
-                        () => window.location = `/users/${response.data.id}`,
-                        5000
-                    );
-                })
-                .catch((error) => {
-                    this.stopLoading();
-                    if (typeof error.data.message !== undefined) {
-                        this.$toast.error(error.data.message);
-                        return;
-                    }
-
-                    this.$toast.error('Ocorreu um erro ao tentar criar o novo usuário');
-                });
-        },
-        requestUserData() {
-            this.startLoading();
-            apiAxios.get(`/api/users/${this.id}`)
-                .then((response) => {
-                    this.stopLoading();
-                    this.loadFormData(response.data)
-                })
-                .catch((error) => {
-                    this.stopLoading();
-
-                    if (typeof error.data !== 'undefined') {
-                        this.$toast.error(error.data.message)
-                        return false;
-                    }
-                })
-        },
-        loadFormData(user) {
-            this.form.name = user.name;
-            this.form.email = user.email;
-            this.form.document = user.document;
-            this.form.birth_date = user.birth_date;
-            this.form.phone_number = user.phone_number;
-            this.form.zip_code = user.zip_code;
-            this.form.status = user.status;
-            this.zip_code_info.uf = getUfName(user.uf);
-            this.zip_code_info.city = user.city
-            this.zip_code_info.neighborhood = user.neighborhood
-            this.zip_code_info.address = user.address;
-        }
     }
 }
 </script>
@@ -420,10 +414,6 @@ export default {
     #user-form-footer {
         display: flex;
         flex-direction: row-reverse;
-    }
-
-    #user-form-submit-btn {
-        background-color: #0084d1;
     }
 
     .user-form-row {
